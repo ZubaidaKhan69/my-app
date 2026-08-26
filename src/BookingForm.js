@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function BookingForm({ availableTimes, dispatch }) {
+function BookingForm({ availableTimes, dispatch, submitForm }) {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('17:00');
   const [guests, setGuests] = useState(1);
@@ -15,18 +15,7 @@ function BookingForm({ availableTimes, dispatch }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = { date, time, guests, occasion };
-
-    let success = false;
-    // Uses window.submitAPI to satisfy ESLint
-    if (typeof window !== 'undefined' && typeof window.submitAPI === 'function') {
-      success = window.submitAPI(formData);
-    } else {
-      success = true; // Fallback for local testing
-    }
-
-    if (success) {
-      alert('Reservation successful!');
-    }
+    submitForm(formData);
   };
 
   return (
