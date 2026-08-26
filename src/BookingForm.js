@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 
 function BookingForm({ availableTimes, dispatch, submitForm }) {
   const [date, setDate] = useState('');
-  const [time, setTime] = useState('17:00');
+  const [time, setTime] = useState('');
   const [guests, setGuests] = useState(1);
   const [occasion, setOccasion] = useState('Birthday');
 
-  const isGuestValid = Number(guests) >= 1 && Number(guests) <= 10;
+  // Explicit Validation Rules
   const isDateValid = date !== '';
-  const isFormValid = isDateValid && isGuestValid && time !== '';
+  const isTimeValid = time !== '';
+  const isGuestValid = Number(guests) >= 1 && Number(guests) <= 10;
+  
+  // Entire form validity check
+  const isFormValid = isDateValid && isTimeValid && isGuestValid;
 
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
@@ -51,6 +55,7 @@ function BookingForm({ availableTimes, dispatch, submitForm }) {
         onChange={(e) => setTime(e.target.value)}
         required
       >
+        <option value="">Select a time</option>
         {availableTimes &&
           availableTimes.map((availableTime) => (
             <option key={availableTime} value={availableTime}>
@@ -58,6 +63,9 @@ function BookingForm({ availableTimes, dispatch, submitForm }) {
             </option>
           ))}
       </select>
+      {!isTimeValid && (
+        <span className="error-message">Please select a time slot.</span>
+      )}
 
       {/* Guests Input */}
       <label htmlFor="guests">Number of guests</label>
