@@ -6,6 +6,10 @@ function BookingForm({ availableTimes, dispatch, submitForm }) {
   const [guests, setGuests] = useState(1);
   const [occasion, setOccasion] = useState('Birthday');
 
+  const isGuestValid = Number(guests) >= 1 && Number(guests) <= 10;
+  const isDateValid = date !== '';
+  const isFormValid = isDateValid && isGuestValid && time !== '';
+
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
     setDate(selectedDate);
@@ -14,8 +18,10 @@ function BookingForm({ availableTimes, dispatch, submitForm }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = { date, time, guests, occasion };
-    submitForm(formData);
+    if (isFormValid) {
+      const formData = { date, time, guests, occasion };
+      submitForm(formData);
+    }
   };
 
   return (
@@ -23,20 +29,27 @@ function BookingForm({ availableTimes, dispatch, submitForm }) {
       onSubmit={handleSubmit}
       style={{ display: 'grid', maxWidth: '300px', gap: '20px', margin: '0 auto' }}
     >
+      {/* Date Field */}
       <label htmlFor="res-date">Choose date</label>
       <input
         type="date"
         id="res-date"
         value={date}
         onChange={handleDateChange}
+        min={new Date().toISOString().split('T')[0]}
         required
       />
+      {!isDateValid && (
+        <span className="error-message">Please select a valid date.</span>
+      )}
 
+      {/* Time Selection */}
       <label htmlFor="res-time">Choose time</label>
       <select
         id="res-time"
         value={time}
         onChange={(e) => setTime(e.target.value)}
+        required
       >
         {availableTimes &&
           availableTimes.map((availableTime) => (
@@ -46,6 +59,7 @@ function BookingForm({ availableTimes, dispatch, submitForm }) {
           ))}
       </select>
 
+      {/* Guests Input */}
       <label htmlFor="guests">Number of guests</label>
       <input
         type="number"
@@ -57,12 +71,19 @@ function BookingForm({ availableTimes, dispatch, submitForm }) {
         onChange={(e) => setGuests(e.target.value)}
         required
       />
+      {!isGuestValid && (
+        <span className="error-message">
+          Please enter between 1 and 10 guests.
+        </span>
+      )}
 
+      {/* Occasion Selection */}
       <label htmlFor="occasion">Occasion</label>
       <select
         id="occasion"
         value={occasion}
         onChange={(e) => setOccasion(e.target.value)}
+        required
       >
         <option value="Birthday">Birthday</option>
         <option value="Anniversary">Anniversary</option>
@@ -70,10 +91,13 @@ function BookingForm({ availableTimes, dispatch, submitForm }) {
         <option value="Other">Other</option>
       </select>
 
+      {/* Submit Button */}
       <input
         type="submit"
         value="Make Your reservation"
         className="btn btn-primary"
+        disabled={!isFormValid}
+        aria-label="On Click"
       />
     </form>
   );

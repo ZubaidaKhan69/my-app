@@ -375,3 +375,17 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+input[type="submit"]:disabled {
+  background-color: #cccccc !important;
+  color: #666666 !important;
+  cursor: not-allowed;
+  border: 1px solid #999999;
+}
+
+/* Validation error text */
+.error-message {
+  color: #d9534f;
+  font-size: 0.85rem;
+  margin-top: -12px;
+}
